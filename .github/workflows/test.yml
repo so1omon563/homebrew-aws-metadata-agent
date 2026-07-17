@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Trust and register the checked-out tap
+        run: |
+          brew trust --tap so1omon563/aws-metadata-agent
+          brew tap --custom-remote so1omon563/aws-metadata-agent "$GITHUB_WORKSPACE"
+
+      - name: Check formula syntax and style
+        run: |
+          ruby -c Formula/aws-metadata-agent.rb
+          brew audit --strict --formula so1omon563/aws-metadata-agent/aws-metadata-agent
+
+      - name: Install and test formula
+        run: |
+          brew install so1omon563/aws-metadata-agent/aws-metadata-agent
+          brew test so1omon563/aws-metadata-agent/aws-metadata-agent

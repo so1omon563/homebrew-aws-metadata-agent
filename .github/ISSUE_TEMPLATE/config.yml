@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Agent runtime and service issues
+    url: https://github.com/so1omon563/aws-metadata-agent/issues
+    about: Report setup, service, metadata endpoint, and aws-metadata command problems in the main project.
+  - name: Security reporting
+    url: https://github.com/so1omon563/homebrew-aws-metadata-agent/security/policy
+    about: Report suspected vulnerabilities privately.
