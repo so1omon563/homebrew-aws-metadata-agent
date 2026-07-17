@@ -33,5 +33,39 @@ class AwsMetadataAgent < Formula
   test do
     assert_equal "0.2.0\n", shell_output("#{bin}/aws-metadata version")
     assert_match "Usage:", shell_output("#{bin}/aws-metadata setup --help")
+
+    package_root = testpath/"package"
+    package_root.mkpath
+    bootstrap_marker = testpath/"bootstrapped"
+    install_marker = testpath/"installed"
+    package_cli = testpath/"aws-metadata"
+
+    (package_root/"bootstrap.sh").write <<~SH
+      #!/bin/bash
+      set -eu
+      /usr/bin/touch "#{bootstrap_marker}"
+    SH
+    (package_root/"bootstrap.sh").chmod 0755
+
+    (package_root/"install.sh").write <<~SH
+      #!/bin/bash
+      set -eu
+      [[ -f "#{bootstrap_marker}" ]]
+      [[ ${1:-} == --package-cli ]]
+      [[ ${2:-} == "#{package_cli}" ]]
+      /usr/bin/touch "#{install_marker}"
+    SH
+    (package_root/"install.sh").chmod 0755
+
+    package_cli.write("#!/bin/bash\n")
+    package_cli.chmod 0755
+    ENV["HOME"] = testpath.to_s
+    ENV["PATH"] = "/usr/bin:/bin"
+    ENV["AWS_METADATA_PACKAGE_ROOT"] = package_root.to_s
+    ENV["AWS_METADATA_PACKAGE_CLI"] = package_cli.to_s
+
+    shell_output("#{libexec}/bin/aws-metadata setup")
+    assert_path_exists bootstrap_marker
+    assert_path_exists install_marker
   end
 end
