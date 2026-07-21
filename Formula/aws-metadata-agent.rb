@@ -1,8 +1,8 @@
 class AwsMetadataAgent < Formula
   desc "Run aws-runas as a native EC2 metadata service"
   homepage "https://github.com/so1omon563/aws-metadata-agent"
-  url "https://github.com/so1omon563/aws-metadata-agent/releases/download/v0.3.0/aws-metadata-agent-v0.3.0.tar.gz"
-  sha256 "1c2cffaf79e6ea10f0b64463e58a91185e2567d9a0f6cd7067534cc1a1be4e5c"
+  url "https://github.com/so1omon563/aws-metadata-agent/releases/download/v0.3.1/aws-metadata-agent-v0.3.1.tar.gz"
+  sha256 "52dafd855709a69fa638919b25e4eab804e863ae1504d6ed1c57b2ddc713fb23"
   license "MIT"
 
   depends_on :macos
@@ -31,7 +31,7 @@ class AwsMetadataAgent < Formula
   end
 
   test do
-    assert_equal "0.3.0\n", shell_output("#{bin}/aws-metadata version")
+    assert_equal "0.3.1\n", shell_output("#{bin}/aws-metadata version")
     assert_match "Usage:", shell_output("#{bin}/aws-metadata setup --help")
 
     package_root = testpath/"package"
