@@ -9,13 +9,15 @@ formula before trusting it:
 brew trust --tap so1omon563/aws-metadata-agent
 brew tap so1omon563/aws-metadata-agent
 brew install aws-metadata-agent
-aws-metadata setup
+aws-metadata setup --mode user
 ```
 
 Homebrew installs only the versioned, unprivileged package payload. The
-explicit setup command invokes the reviewed project installer for the
-link-local address and launchd services. Privileged jobs use root-owned copies
-at absolute paths; they never execute from the Homebrew Cellar.
+explicit user-mode setup runs entirely in the signed-in account. Use
+`aws-metadata setup --mode system` instead when the transparent link-local
+endpoint is required; only system mode requests administrator access.
+Privileged jobs use root-owned copies at absolute paths and never execute from
+the Homebrew Cellar.
 
 The formula does not bundle, mirror, or claim ownership of `aws-runas`. If it
 is not already installed, setup downloads the pinned upstream release directly
@@ -33,12 +35,13 @@ the tagged source installer from the main project.
 ```sh
 brew update
 brew upgrade aws-metadata-agent
-aws-metadata setup
+aws-metadata setup --mode user
+# or: aws-metadata setup --mode system
 aws-metadata version
 aws-metadata status
 ```
 
-Setup refreshes the root-owned service copy after Homebrew changes the package
+Setup refreshes the selected service mode after Homebrew changes the package
 payload.
 
 ## Uninstall
@@ -46,13 +49,14 @@ payload.
 Remove service state before removing the package:
 
 ```sh
-aws-metadata uninstall
+aws-metadata uninstall --mode user
+# or: aws-metadata uninstall --mode system
 brew uninstall aws-metadata-agent
 ```
 
 If Homebrew was removed first, reinstall the formula and run
-`aws-metadata uninstall`, or use `uninstall.sh` from the matching project
-release.
+the matching explicit uninstall command, or use `uninstall.sh` from the
+matching project release.
 
 ## Rollback
 
