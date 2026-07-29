@@ -4,6 +4,7 @@ class AwsMetadataAgent < Formula
   url "https://github.com/so1omon563/aws-metadata-agent/releases/download/v0.4.1/aws-metadata-agent-v0.4.1.tar.gz"
   sha256 "efaf75539aed4130c7ff9e7ff2591fbd45a8723086eeeb181aee89dc25953a5c"
   license "MIT"
+  revision 1
 
   depends_on :macos
 
@@ -13,9 +14,9 @@ class AwsMetadataAgent < Formula
 
     (bin/"aws-metadata").write_env_script(
       libexec/"bin/aws-metadata",
-      AWS_METADATA_PACKAGE_ROOT: libexec,
-      AWS_METADATA_VERSION_FILE: libexec/"VERSION",
-      AWS_METADATA_PACKAGE_CLI:  bin/"aws-metadata",
+      AWS_METADATA_PACKAGE_ROOT: opt_libexec,
+      AWS_METADATA_VERSION_FILE: opt_libexec/"VERSION",
+      AWS_METADATA_PACKAGE_CLI:  opt_bin/"aws-metadata",
     )
   end
 
@@ -37,6 +38,11 @@ class AwsMetadataAgent < Formula
   test do
     assert_equal "0.4.1\n", shell_output("#{bin}/aws-metadata version")
     assert_match "Usage:", shell_output("#{bin}/aws-metadata setup --help")
+
+    wrapper = (bin/"aws-metadata").read
+    assert_match "AWS_METADATA_PACKAGE_ROOT=\"#{opt_libexec}\"", wrapper
+    assert_match "AWS_METADATA_VERSION_FILE=\"#{opt_libexec}/VERSION\"", wrapper
+    assert_match "AWS_METADATA_PACKAGE_CLI=\"#{opt_bin}/aws-metadata\"", wrapper
 
     package_root = testpath/"package"
     package_root.mkpath
