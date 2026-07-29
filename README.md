@@ -35,14 +35,17 @@ the tagged source installer from the main project.
 ```sh
 brew update
 brew upgrade aws-metadata-agent
-aws-metadata setup --mode user
-# or: aws-metadata setup --mode system
 aws-metadata version
 aws-metadata status
 ```
 
-Setup refreshes the selected service mode after Homebrew changes the package
-payload.
+User mode uses Homebrew's stable `opt` path and does not require setup after
+routine upgrades. If it was configured by an older formula that used versioned
+Cellar paths, run `aws-metadata setup --mode user` once after upgrading to
+migrate its LaunchAgent and default `credential_process`.
+
+System mode copies a root-owned payload outside Homebrew. Run
+`aws-metadata setup --mode system` after each package upgrade to refresh it.
 
 ## Uninstall
 
